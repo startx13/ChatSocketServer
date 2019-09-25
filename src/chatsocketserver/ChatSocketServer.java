@@ -1,6 +1,7 @@
 package chatsocketserver;
 
 import java.util.LinkedList;
+import java.util.ListIterator;
 
 public class ChatSocketServer {
 
@@ -14,6 +15,15 @@ public class ChatSocketServer {
     public static void createNewThread()
     {
         ut.add(new UserThread());
+    }
+    
+    synchronized public static void broadcastMsg(String msg)
+    {
+       ListIterator litr = ut.listIterator();
+        while(litr.hasNext()){
+            UserThread uThread = (UserThread) litr.next();
+            uThread.sendMsg(msg);
+        }
     }
     
 }

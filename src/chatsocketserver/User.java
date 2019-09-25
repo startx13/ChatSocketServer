@@ -34,7 +34,7 @@ public class User
         }
     }
     
-    public void sendMsg(String msg)
+    synchronized public void sendMsg(String msg)
     {
         try 
         {
@@ -58,7 +58,7 @@ public class User
     
     String oldMsg = null;
     
-    public String getLastMsg()
+    synchronized public String getLastMsg()
     {
         String msg = null;
         try 
@@ -73,7 +73,7 @@ public class User
         return msg; //Return null if message hasn't changed
     }
     
-    public boolean isConnected()
+    synchronized public boolean isConnected()
     {
         return s.isConnected();
     }

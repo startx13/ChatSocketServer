@@ -29,6 +29,11 @@ public class UserThread implements Runnable
         Thread t = new Thread(this,"UserThread-" + UserThread.threadNumber);
         t.start();
     }
+    
+    synchronized public void sendMsg(String msg)
+    {
+        u.sendMsg(msg);
+    }
 
     @Override
     public void run() 
@@ -53,14 +58,10 @@ public class UserThread implements Runnable
         
         System.out.println("Connesso: " + (UserThread.threadNumber - 1) + " utenti");
         
-        while(true)//u.isConnected())
+        while(true && u.isConnected())
         {
-            
-            if(u.getLastMsg() !=null)
-            {
-                System.out.println("[UserThread-" + u.getId() + "]: Messaggio arrivato");
                 System.out.println("[" + u.getName() + "]: " + u.getLastMsg());
-            }
+                //ChatSocketServer.broadcastMsg("[" + u.getName() + "]: " + u.getLastMsg());
         }
     }
 }
