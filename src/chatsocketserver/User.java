@@ -10,7 +10,7 @@ public class User
 {
     private static int userCount = 0;
     private int id;
-    private String userName;
+    volatile private String userName;
     private Socket s = null;
     private DataOutputStream os = null;
     private DataInputStream is = null;
@@ -29,7 +29,9 @@ public class User
             is = new DataInputStream(s.getInputStream());
             os = new DataOutputStream(s.getOutputStream());
             this.b = new BufferedReader(new InputStreamReader(is));
-        } catch (Exception ex) {
+        } 
+        catch (Exception ex) 
+        {
             System.out.println("[Errore] Impossibile creare lo stream I/O per l'utente " + this.id);
         }
     }
@@ -39,24 +41,23 @@ public class User
         try 
         {
             os.writeBytes(msg);
-            //os.writeUTF(msg);
-        } catch (Exception ex) {
+        } 
+        catch (Exception ex) 
+        {
             System.out.println("[Errore] Impossibile inviare il messaggio all'utente " + this.id);
         }
         
     }
     
-    public int getId()
+    synchronized public int getId()
     {
         return this.id;
     }
     
-    public String getName()
+    synchronized public String getName()
     {
         return this.userName;
     }
-    
-    String oldMsg = null;
     
     synchronized public String getLastMsg()
     {
@@ -76,5 +77,11 @@ public class User
     synchronized public boolean isConnected()
     {
         return s.isConnected();
+    }
+    
+    @Override
+    public String toString()
+    {
+        return "[" + this.userName + "]";
     }
 }

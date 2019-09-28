@@ -4,16 +4,16 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Random;
 
-
 public class UserThread implements Runnable
 {
-    private int defUser = 6;
+    private final int defUser = 6;
     String[] defaultUsername = new String[defUser];
     public static int threadNumber = 0;
-    private static final int port = 99;
+    private static final int port = 2000;
     private ServerSocket ss = null;
     private User u;
     private Socket us;
+    private boolean connected = false;
     
     UserThread()
     {
@@ -26,15 +26,25 @@ public class UserThread implements Runnable
         
         UserThread.threadNumber++;
         
-        Thread t = new Thread(this,"UserThread-" + UserThread.threadNumber);
-        t.start();
     }
     
-    synchronized public void sendMsg(String msg)
+    synchronized public boolean isConnected()
     {
+        return connected;
+    }
+    
+    synchronized public void sendMsg(String msg, User u)
+    {
+        //System.out.println("MSG: " + msg + " U: " + u);
         u.sendMsg(msg);
     }
 
+    synchronized public User getUser()
+    {
+        return this.u;
+    }
+    
+    
     @Override
     public void run() 
     {
@@ -42,6 +52,7 @@ public class UserThread implements Runnable
         {
             this.ss = new ServerSocket(port);
             us = ss.accept();
+            us.setKeepAlive(true);
             ss.close();
             ss = null;
         } 
@@ -52,16 +63,39 @@ public class UserThread implements Runnable
         }
         Random r = new Random();
         int rand = r.nextInt(defUser - 1);
-        u = new User(us,defaultUsername[rand]);
-        u.sendMsg("Connesso al Server! Username: " + defaultUsername[rand] + "\n");
+        
+        this.u = new User(us,defaultUsername[rand]);
+        this.u.sendMsg("Connesso al Server! Username: " + defaultUsername[rand] + "\n");
         ChatSocketServer.createNewThread();
+        this.connected = true;
         
         System.out.println("Connesso: " + (UserThread.threadNumber - 1) + " utenti");
         
-        while(true && u.isConnected())
+        boolean disconnected = false;
+        
+        String nome = this.u.getName();
+        while(!(disconnected) && this.u.isConnected())
         {
-                System.out.println("[" + u.getName() + "]: " + u.getLastMsg());
-                //ChatSocketServer.broadcastMsg("[" + u.getName() + "]: " + u.getLastMsg());
+            String msg = this.u.getLastMsg();
+            if(msg != null)
+            {
+                System.out.println("[" + nome + "]: " + msg);
+                ChatSocketServer.broadcastMsg("[" + nome + "]: " + msg + "\n");
+                //System.out.println("Inviato: [" + nome + "]: " + msg);
+            }
+            else
+            { 
+                disconnected = true;
+            }
+        }
+        
+        try 
+        {
+            this.us.close();
+        } 
+        catch (Exception ex) 
+        {
+            ex.printStackTrace();
         }
     }
 }
