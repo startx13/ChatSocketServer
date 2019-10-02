@@ -1,7 +1,5 @@
 package chatsocketserver;
 
-import java.util.LinkedList;
-import java.util.ListIterator;
 
 public class ChatSocketServer {
 
@@ -9,7 +7,11 @@ public class ChatSocketServer {
     
     public static void main(String[] args) 
     {
-        //ut.add(new UserThread());
+        for(int i=0;i<ut.length;i++)
+        {
+            ut[i] = null;
+        }
+        
         boolean t = true;
         for(int i=0; i<ut.length && t;i++)
             if(ut[i] == null)
@@ -21,9 +23,8 @@ public class ChatSocketServer {
             }
     }
     
-    synchronized public static void createNewThread()
+    public static void createNewThread()
     {
-        //ut.add(new UserThread());
         boolean t = true;
         for(int i=0; i<ut.length && t;i++)
             if(ut[i] == null)
@@ -35,9 +36,9 @@ public class ChatSocketServer {
             }
     }
     
-    synchronized public static void broadcastMsg(String msg)
+    public static void broadcastMsg(String msg)
     {
-        Broadcast b = new Broadcast(msg,ut);
+        Broadcast b = new Broadcast(msg);//,ut);
         Thread t = new Thread(b,"BroadCast-Thread");
         t.start();
     }
@@ -45,30 +46,32 @@ public class ChatSocketServer {
     static class Broadcast implements Runnable
     {
         String msg = null;
-        UserThread[] ut = null;
         static boolean started = false;
         
-        Broadcast(String msg, UserThread[] ut)
+        Broadcast(String msg)
         {
             this.msg = msg;
-            this.ut = ut;
+            //this.ut = ut;
         }
         
         @Override
         public void run() 
         {
-            
-            System.out.println("Invio messaggio broadcast: " + msg);
-            for(int i = 0;i<this.ut.length;i++)
+            try
             {
-                System.out.println("Broadcast a utente: " + i);
-                if(this.ut[i] != null && this.ut[i].isConnected())
-                {   
-                    //System.out.println("Invio messaggio a: [" + this.ut[i].getUser().getName() + "]");
-                    this.ut[i].sendMsg(msg, this.ut[i].getUser());
+                for(int i = 0;i<ChatSocketServer.ut.length;i++)
+                {
+                    if(ChatSocketServer.ut[i] != null && ChatSocketServer.ut[i].isConnected())
+                    {   
+                        ChatSocketServer.ut[i].sendMsg(msg + "\n", ChatSocketServer.ut[i].getUser());
+                    }
                 }
+                Broadcast.started = false;
             }
-            Broadcast.started = false;
+            catch(Exception e)
+            {
+                e.printStackTrace();
+            }
         }
     
     }

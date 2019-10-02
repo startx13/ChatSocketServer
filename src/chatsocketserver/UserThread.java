@@ -28,18 +28,18 @@ public class UserThread implements Runnable
         
     }
     
-    synchronized public boolean isConnected()
+    public boolean isConnected()
     {
         return connected;
     }
     
-    synchronized public void sendMsg(String msg, User u)
+    public void sendMsg(String msg, User u)
     {
-        //System.out.println("MSG: " + msg + " U: " + u);
+        //System.out.println("USERTHREAD: MSG: " + msg + " U: " + u);
         u.sendMsg(msg);
     }
 
-    synchronized public User getUser()
+    public User getUser()
     {
         return this.u;
     }
@@ -62,7 +62,7 @@ public class UserThread implements Runnable
             ex.printStackTrace();
         }
         Random r = new Random();
-        int rand = r.nextInt(defUser - 1);
+        int rand = r.nextInt(defUser);
         
         this.u = new User(us,defaultUsername[rand]);
         this.u.sendMsg("Connesso al Server! Username: " + defaultUsername[rand] + "\n");
@@ -80,8 +80,7 @@ public class UserThread implements Runnable
             if(msg != null)
             {
                 System.out.println("[" + nome + "]: " + msg);
-                ChatSocketServer.broadcastMsg("[" + nome + "]: " + msg + "\n");
-                //System.out.println("Inviato: [" + nome + "]: " + msg);
+                ChatSocketServer.broadcastMsg("[" + nome + "]: " + msg); //+ "\n");
             }
             else
             { 

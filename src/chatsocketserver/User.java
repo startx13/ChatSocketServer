@@ -10,7 +10,7 @@ public class User
 {
     private static int userCount = 0;
     private int id;
-    volatile private String userName;
+    private String userName;
     private Socket s = null;
     private DataOutputStream os = null;
     private DataInputStream is = null;
@@ -36,7 +36,7 @@ public class User
         }
     }
     
-    synchronized public void sendMsg(String msg)
+    public void sendMsg(String msg)
     {
         try 
         {
@@ -49,17 +49,17 @@ public class User
         
     }
     
-    synchronized public int getId()
+    public int getId()
     {
         return this.id;
     }
     
-    synchronized public String getName()
+    public String getName()
     {
         return this.userName;
     }
     
-    synchronized public String getLastMsg()
+    public String getLastMsg()
     {
         String msg = null;
         try 
@@ -71,10 +71,10 @@ public class User
             ex.printStackTrace();
         }
         
-        return msg; //Return null if message hasn't changed
+        return msg;
     }
     
-    synchronized public boolean isConnected()
+    public boolean isConnected()
     {
         return s.isConnected();
     }
