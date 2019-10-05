@@ -6,7 +6,9 @@ import java.util.Random;
 
 public class UserThread implements Runnable
 {
-    private final int defUser = 6;
+    private static int defUser = 12;
+    private static int user = 0;
+    private static int counter = 0;
     String[] defaultUsername = new String[defUser];
     public static int threadNumber = 0;
     private static final int port = 2000;
@@ -23,6 +25,13 @@ public class UserThread implements Runnable
         defaultUsername[3] = "Marco";
         defaultUsername[4] = "Silvio";
         defaultUsername[5] = "Banana Joe";
+        defaultUsername[6] = "Jotaro";
+        defaultUsername[7] = "Joseph";
+        defaultUsername[8] = "JoJo";
+        defaultUsername[9] = "Giorno Giovanna";
+        defaultUsername[10] = "Matteo";
+        defaultUsername[11] = "Bruno";
+        
         
         UserThread.threadNumber++;
         
@@ -61,11 +70,25 @@ public class UserThread implements Runnable
             System.out.println("[Errore] Impossibile ottenere il socket utente");
             ex.printStackTrace();
         }
-        Random r = new Random();
-        int rand = r.nextInt(defUser);
+        //Random r = new Random();
+        //r.nextInt(defUser);
+        int rand = 0;
         
-        this.u = new User(us,defaultUsername[rand]);
-        this.u.sendMsg("Connesso al Server! Username: " + defaultUsername[rand] + "\n");
+        if(UserThread.user<UserThread.defUser)
+        {
+            rand = UserThread.user;
+            UserThread.user++;
+        }
+        else
+        {
+            UserThread.user = 0;
+            UserThread.counter++;
+            rand = UserThread.user;
+            UserThread.user++;
+        }
+        
+        this.u = new User(us,defaultUsername[rand] + " - " + UserThread.counter);
+        this.u.sendMsg("Connesso al Server! Username: " + defaultUsername[rand] + " - " + UserThread.counter + "\n");
         ChatSocketServer.createNewThread();
         this.connected = true;
         
