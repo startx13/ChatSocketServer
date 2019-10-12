@@ -93,14 +93,33 @@ public class UserThread implements Runnable
         
         boolean disconnected = false;
         
-        String nome = this.u.getName();
+        
         while(!(disconnected) && this.u.isConnected())
         {
             String msg = this.u.getLastMsg();
             if(msg != null)
             {
-                System.out.println("[" + nome + "]: " + msg);
-                ChatSocketServer.broadcastMsg("[" + nome + "]: " + msg); 
+                if(msg.startsWith("/"))
+                {
+                    String parsed = msg.replace("/", "");
+                    System.out.println("parsed: " + parsed);
+                    String[] parsed2 = parsed.split(" ");
+                    System.out.println("parsed0: " + parsed2[0] + " parsed1: " + parsed2[1]);
+                    
+                    if(parsed2[0].equals("nickname"))
+                    {
+                        this.u.setUsername(parsed2[1]);
+                    }
+                    else
+                    {
+                        this.u.sendMsg("[Server]: Comando errato");
+                    }
+                }
+                else
+                {
+                    System.out.println("[" + this.u.getName() + "]: " + msg);
+                    ChatSocketServer.broadcastMsg("[" + this.u.getName() + "]: " + msg); 
+                }
             }
             else
             { 

@@ -59,6 +59,11 @@ public class User
         return this.userName;
     }
     
+    public void setUsername(String name)
+    {
+        this.userName = name;
+    }
+    
     public String getLastMsg()
     {
         String msg = null;
