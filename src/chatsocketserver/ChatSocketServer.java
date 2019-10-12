@@ -3,7 +3,7 @@ package chatsocketserver;
 
 public class ChatSocketServer {
 
-    static UserThread[] ut = new UserThread[50];
+    static UserThread[] ut = new UserThread[1000000];
     
     public static void main(String[] args) 
     {
@@ -38,7 +38,7 @@ public class ChatSocketServer {
     
     public static void broadcastMsg(String msg)
     {
-        Broadcast b = new Broadcast(msg);//,ut);
+        Broadcast b = new Broadcast(msg);
         Thread t = new Thread(b,"BroadCast-Thread");
         t.start();
     }
@@ -51,7 +51,6 @@ public class ChatSocketServer {
         Broadcast(String msg)
         {
             this.msg = msg;
-            //this.ut = ut;
         }
         
         @Override

@@ -2,7 +2,6 @@ package chatsocketserver;
 
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Random;
 
 public class UserThread implements Runnable
 {
@@ -44,7 +43,6 @@ public class UserThread implements Runnable
     
     public void sendMsg(String msg, User u)
     {
-        //System.out.println("USERTHREAD: MSG: " + msg + " U: " + u);
         u.sendMsg(msg);
     }
 
@@ -70,8 +68,7 @@ public class UserThread implements Runnable
             System.out.println("[Errore] Impossibile ottenere il socket utente");
             ex.printStackTrace();
         }
-        //Random r = new Random();
-        //r.nextInt(defUser);
+      
         int rand = 0;
         
         if(UserThread.user<UserThread.defUser)
@@ -103,7 +100,7 @@ public class UserThread implements Runnable
             if(msg != null)
             {
                 System.out.println("[" + nome + "]: " + msg);
-                ChatSocketServer.broadcastMsg("[" + nome + "]: " + msg); //+ "\n");
+                ChatSocketServer.broadcastMsg("[" + nome + "]: " + msg); 
             }
             else
             { 
