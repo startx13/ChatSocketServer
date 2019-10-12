@@ -63,6 +63,11 @@ public class User
     {
         this.userName = name;
     }
+
+    public String getIp()
+    {
+        return this.s.getInetAddress().toString();
+    }
     
     public String getLastMsg()
     {

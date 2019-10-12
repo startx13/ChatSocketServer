@@ -85,7 +85,15 @@ public class UserThread implements Runnable
         }
         
         this.u = new User(us,defaultUsername[rand] + " - " + UserThread.counter);
+        
+        //WELCOME MESSAGE
         this.u.sendMsg("Connesso al Server! Username: " + defaultUsername[rand] + " - " + UserThread.counter + "\n");
+        this.u.sendMsg("Comandi disponibili: \n");
+        this.u.sendMsg("                    /nickname <nuovo_nome>\n");
+        this.u.sendMsg("                    /getmyip\n");
+        this.u.sendMsg("                    /userlist\n");
+        
+        
         ChatSocketServer.createNewThread();
         this.connected = true;
         
@@ -102,17 +110,37 @@ public class UserThread implements Runnable
                 if(msg.startsWith("/"))
                 {
                     String parsed = msg.replace("/", "");
-                    System.out.println("parsed: " + parsed);
                     String[] parsed2 = parsed.split(" ");
-                    System.out.println("parsed0: " + parsed2[0] + " parsed1: " + parsed2[1]);
                     
-                    if(parsed2[0].equals("nickname"))
+                    if(parsed2[0].equals("nickname") && parsed2.length >1)
                     {
-                        this.u.setUsername(parsed2[1]);
+                        String nuovoNome = "";
+                        for(int i = 1; i<parsed2.length;i++)
+                        {
+                            if(nuovoNome.equals(""))
+                                nuovoNome = parsed2[i];
+                            else
+                                nuovoNome = nuovoNome + " " + parsed2[i];
+                        }
+                        this.u.setUsername(nuovoNome);
+                        this.u.sendMsg("[Server]: Nome cambato in: " + nuovoNome + "\n");
+                    }
+                    else if(parsed2[0].equals("getmyip") && parsed2.length == 1)
+                    {
+                        this.u.sendMsg("[Server]: " + this.u.getIp() + "\n");
+                    }
+                    else if(parsed2[0].equals("userlist") && parsed2.length == 1)
+                    {
+                        String[] userlist = ChatSocketServer.userList();
+                        for(int i = 0;i<userlist.length;i++)
+                            if(userlist[i] != null)
+                            {
+                                this.u.sendMsg(userlist[i] + "\n");
+                            }
                     }
                     else
                     {
-                        this.u.sendMsg("[Server]: Comando errato");
+                        this.u.sendMsg("[Server]: Comando errato\n");
                     }
                 }
                 else

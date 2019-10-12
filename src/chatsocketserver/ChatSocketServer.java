@@ -43,6 +43,18 @@ public class ChatSocketServer {
         t.start();
     }
     
+    static String[] userList()
+    {
+        String[] userlist = new String[ut.length];
+        boolean t = true;
+        for(int i=0; i<ut.length && t;i++)
+            if(ut[i] != null && ut[i].getUser() != null)
+            {
+                userlist[i] =  ut[i].getUser().getName() + ut[i].getUser().getIp();
+            }
+        return userlist;
+    }
+    
     static class Broadcast implements Runnable
     {
         String msg = null;
